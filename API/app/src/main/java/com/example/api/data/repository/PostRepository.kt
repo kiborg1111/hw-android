@@ -1,19 +1,16 @@
 package com.example.api.data.repository
 
-import com.example.api.data.remote.RetrofitInstance
+import com.example.api.data.remote.ApiService
 import com.example.api.domain.model.Post
+import javax.inject.Inject
 
-class PostRepository {
-
-    private val api = RetrofitInstance.api
+class PostRepository @Inject constructor(
+    private val api: ApiService
+) {
 
     suspend fun getPosts(): List<Post> {
         return api.getPosts().map {
-            Post(
-                id = it.id,
-                title = it.title,
-                description = it.body
-            )
+            Post(it.id, it.title, it.body)
         }
     }
 
@@ -22,4 +19,3 @@ class PostRepository {
         return Post(dto.id, dto.title, dto.body)
     }
 }
-

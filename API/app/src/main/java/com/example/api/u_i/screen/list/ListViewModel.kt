@@ -1,16 +1,21 @@
 package com.example.api.u_i.screen.list
 
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.api.data.repository.PostRepository
+import com.example.api.data.repository.FavoriteRepository
 import com.example.api.domain.model.Post
 import com.example.api.u_i.state.UiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.*
-
-class ListViewModel : ViewModel() {
-
-    private val repository = PostRepository()
+import javax.inject.Inject
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
+@HiltViewModel
+class ListViewModel @Inject constructor(
+    private val repository: PostRepository
+) : ViewModel() {
 
     var state by mutableStateOf<UiState<List<Post>>>(UiState.Loading)
         private set
@@ -18,7 +23,7 @@ class ListViewModel : ViewModel() {
     var searchQuery by mutableStateOf("")
         private set
 
-    private var allPosts: List<Post> = emptyList()
+    private var allPosts = emptyList<Post>()
 
     init {
         load()
@@ -28,8 +33,7 @@ class ListViewModel : ViewModel() {
         viewModelScope.launch {
             state = UiState.Loading
             try {
-                val data = repository.getPosts()
-                allPosts = data
+                allPosts = repository.getPosts()
                 applyFilter()
             } catch (e: Exception) {
                 state = UiState.Error("Ошибка загрузки")
@@ -47,7 +51,9 @@ class ListViewModel : ViewModel() {
             it.title.contains(searchQuery, ignoreCase = true)
         }
 
-        state = if (filtered.isEmpty()) UiState.Empty
-        else UiState.Success(filtered)
+        state = if (filtered.isEmpty())
+            UiState.Empty
+        else
+            UiState.Success(filtered)
     }
 }

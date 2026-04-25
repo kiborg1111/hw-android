@@ -11,8 +11,10 @@ import com.example.api.u_i.state.UiState
 @Composable
 fun DetailScreen(
     state: UiState<Post>,
+    isFavorite: Boolean,
     onRetry: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onToggleFavorite: () -> Unit
 ) {
 
     Column(
@@ -47,30 +49,29 @@ fun DetailScreen(
 
             is UiState.Success -> {
 
+                val post = state.data
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(6.dp)
                 ) {
 
-                    Column(
-                        modifier = Modifier.padding(16.dp)
-                    ) {
+                    Column(Modifier.padding(16.dp)) {
 
-                        Text(
-                            text = state.data.title,
-                            style = MaterialTheme.typography.headlineSmall
-                        )
+                        Text(post.title)
+                        Spacer(Modifier.height(8.dp))
+                        Text(post.description)
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(Modifier.height(16.dp))
 
-                        Divider()
-
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Text(
-                            text = state.data.description,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                        Button(onClick = onToggleFavorite) {
+                            Text(
+                                if (isFavorite)
+                                    "Убрать из избранного"
+                                else
+                                    "В избранное"
+                            )
+                        }
                     }
                 }
             }
