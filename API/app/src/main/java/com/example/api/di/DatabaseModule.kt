@@ -3,7 +3,7 @@ package com.example.api.di
 import android.content.Context
 import androidx.room.Room
 import com.example.api.data.local.AppDatabase
-import com.example.api.data.local.FavoriteDao
+import com.example.api.data.local.FavouriteDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,16 +19,14 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(
         @ApplicationContext context: Context
-    ): AppDatabase {
-        return Room.databaseBuilder(
+    ): AppDatabase =
+        Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            "app_db"
+            "hw3_db"
         ).build()
-    }
 
     @Provides
-    fun provideFavoriteDao(db: AppDatabase): FavoriteDao {
-        return db.favoriteDao()
-    }
+    fun provideFavouriteDao(db: AppDatabase): FavouriteDao =
+        db.favouriteDao()
 }

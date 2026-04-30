@@ -1,8 +1,0 @@
-package com.example.api.domain.model
-
-data class Post(
-    val id: Int,
-    val title: String,
-    val description: String
-)
-
