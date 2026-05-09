@@ -72,4 +72,12 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    testImplementation ("io.mockk:mockk:1.13.13")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    testImplementation ("androidx.arch.core:core-testing:2.2.0")
+
+    androidTestImplementation ("androidx.compose.ui:ui-test-junit4:1.7.0")
+    debugImplementation ("androidx.compose.ui:ui-test-manifest:1.7.0")
+
 }
