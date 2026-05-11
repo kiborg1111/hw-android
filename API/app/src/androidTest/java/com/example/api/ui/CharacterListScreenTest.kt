@@ -7,6 +7,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.api.model.Character
 import com.example.api.u_i.components.CharacterUiState
 import com.example.api.u_i.screens.CharacterListScreen
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,5 +41,82 @@ class CharacterListScreenTest {
         }
 
         composeTestRule.onNodeWithText("Rick").assertExists()
+    }
+
+    @Test
+    fun `error state calls retry`() {
+
+        var retryCalled = false
+
+        composeTestRule.setContent {
+            CharacterListScreen(
+                uiState = CharacterUiState.Error("Error"),
+                searchQuery = "",
+                onSearchChange = {},
+                onRetry = { retryCalled = true },
+                onClick = {},
+                onLoadMore = {},
+                onFavouriteClick = {},
+                favourites = emptyList()
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText("Retry")
+            .performClick()
+
+        assertTrue(retryCalled)
+    }
+
+    @Test
+    fun `empty state shows no results`() {
+
+        composeTestRule.setContent {
+            CharacterListScreen(
+                uiState = CharacterUiState.Empty,
+                searchQuery = "",
+                onSearchChange = {},
+                onRetry = {},
+                onClick = {},
+                onLoadMore = {},
+                onFavouriteClick = {},
+                favourites = emptyList()
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText("No results")
+            .assertExists()
+    }
+
+    @Test
+    fun `click character passes correct id`() {
+
+        var clickedId: Int? = null
+
+        composeTestRule.setContent {
+            CharacterListScreen(
+                uiState = CharacterUiState.Success(
+                    listOf(
+                        Character(7, "Rick", "Alive", "Human", "", false)
+                    ),
+                    endReached = true,
+                    paginationError = false
+                ),
+                searchQuery = "",
+                onSearchChange = {},
+                onRetry = {},
+                onClick = { clickedId = it },
+                onLoadMore = {},
+                onFavouriteClick = {},
+                favourites = emptyList()
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText("Rick")
+            .performClick()
+
+        assertEquals(7, clickedId)
     }
 }
